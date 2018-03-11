@@ -23,3 +23,5 @@ for i in range(1,7):
     df = pd.read_json("dataset/review_"+str(i)+".json")
     temp = df.join(df1.set_index('business_id'), on='business_id', how='inner', lsuffix='_caller', rsuffix='_other')
     counter += temp.shape[0]
+
+counter
