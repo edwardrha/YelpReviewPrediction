@@ -5,8 +5,11 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
+
+# Global
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
+
 
 def Preprocessing(InputString):
     """
@@ -24,17 +27,23 @@ def Bootstrap():
     """
     Bootstrap code to create processed data files.
     """
-    for i in range(1,7):
-        print i
-        df_temp = pd.read_json('../dataset/review_' + str(i) + '.json')
-        df_temp.text = df_temp.text.str.replace('["#%\'()*+,/:;<=>@\[\]^_`{|}~’”“′‘\\\.!?『』 ]+', ' ')
-        p = Pool(cpu_count())
-        df_temp.text = p.map(Preprocessing, df_temp.text)
-        p.close()
-        p.join()
-        df_temp.to_json('../dataset/processed_'+str(i)+'.json')
+    df_temp = pd.read_json('../dataset/review.json', lines=True)
+    df_temp.text = df_temp.text.str.replace('["#%\'()*+,/:;<=>@\[\]^_`{|}~’”“′‘\\\.!?『』 ]+', ' ')
+    p = Pool(2) # Increase if enough memory with >64GB
+    df_temp.text = p.map(Preprocessing, df_temp.text)
+    p.close()
+    p.join()
+    df_temp.to_json('../dataset/processed.json')
+    # for i in range(1,7):
+    #     print i
+    #     df_temp = pd.read_json('../dataset/review_' + str(i) + '.json')
+    #     df_temp.text = df_temp.text.str.replace('["#%\'()*+,/:;<=>@\[\]^_`{|}~’”“′‘\\\.!?『』 ]+', ' ')
+    #     p = Pool(cpu_count())
+    #     df_temp.text = p.map(Preprocessing, df_temp.text)
+    #     p.close()
+    #     p.join()
+    #     df_temp.to_json('../dataset/processed_'+str(i)+'.json')
 
-# def
 
-# if __name__ == "__main__":
-    # Bootstrap()
+if __name__ == "__main__":
+    Bootstrap()
