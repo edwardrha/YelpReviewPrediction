@@ -31,17 +31,17 @@ def train(model, data, labels):
     return model
 
 
-def save(model, path = '../models/word2vec_model10'):
+def save(model, path = 'models/word2vec_model10'):
     model.save(path)
 
 
-def load(model, path = '../models/word2vec_model10'):
+def load(path = 'models/word2vec_model10'):
     model = Doc2Vec.load(path)
     return model
 
 
-def vectorizeReview(model, data):
-    output = model.infer_vector(data)
+def vectorizeReview(model, datapoint):
+    output = model.infer_vector(datapoint)
     return output
 
 
