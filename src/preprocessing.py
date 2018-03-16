@@ -46,7 +46,7 @@ def Bootstrap():
     p.close()
     p.join()
     print "processed\n"
-    df_temp.to_json('../dataset/processed_restaurant_reviews.json')
+    # df_temp.to_json('../dataset/processed_restaurant_reviews.json')
     df_temp[:700000].to_json('../dataset/processed_restaurant_reviews_1.json')
     df_temp[700000:1400000].to_json('../dataset/processed_restaurant_reviews_2.json')
     df_temp[1400000:2100000].to_json('../dataset/processed_restaurant_reviews_3.json')

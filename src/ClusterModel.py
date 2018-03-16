@@ -1,28 +1,70 @@
+# -*- coding: utf-8 -*-
+import numpy as np
 import pandas as pd
-import pickle
-from sklearn.cluster import KMeans
-from multiprocessing import cpu_count
+import csv
+from multiprocessing import Pool
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.externals import joblib
 
 
-def CreateModel(n_cluster = 10, n_init = 15):
-    kMeansModel = KMeans(n_clusters = n_cluster, n_init = n_init, n_jobs=1, random_state=3425)
-    return kMeansModel
+def Bootstrap():
+    df = pd.read_json('../dataset/processed_restaurant_reviews_1.json')
+    data = df.text.apply(' '.join)[:300000]
+    del(df)
+    vec = CountVectorizer(min_df=5)
+    X = vec.fit_transform(data)
+    vocab = vec.get_feature_names()
+    tf_feature_names = vec.get_feature_names()
+    save(tf_feature_names, '../models/tf_feature_names.pkl')
+
+    input = []
+    sizes = [10, 15, 20, 25, 30, 40]
+    for size in [10, 15, 20, 25, 30, 40]:
+        input.append([X, size])
+    p = Pool(4)
+    results = p.map(createLDAmodel, input)
+    p.close()
+    p.join()
+    for i in range(6):
+        print "1\n"
+        lda = results[i]
+        predictions = lda.transform(X)
+        print "2\n"
+        results.append(lda)
+        myFile = open('../dataset/300klabel_proba_' + str(sizes[i]) + '.txt', 'w')
+        thefile = open('../dataset/300ktop_category_' + str(sizes[i]) + '.txt', 'w')
+        with myFile:
+            writer = csv.writer(myFile)
+            writer.writerows(predictions)
+            for item in predictions:
+                thefile.write("%s\n" % np.argmax(item))
+        thefile.close()
+        myFile.close()
+        save(lda, '../models/lda_'+str(sizes[i])+'.pkl')
 
 
-def train(model, data):
-    model.fit(data)
+def display_topics(model, feature_names, no_top_words):
+    for topic_idx, topic in enumerate(model.components_):
+        print "Topic %d:" % (topic_idx)
+        print " ".join([feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]])
+
+
+def createLDAmodel(list1):
+    X = list1[0]
+    n_topics = list1[1]
+    lda = LatentDirichletAllocation(n_components=n_topics, max_iter=5, learning_method='online', learning_offset=50.,random_state=0).fit(X)
+    return lda
+
+
+def save(model, path='../models/lda.pkl'):
+    joblib.dump(model, path)
+
+
+def load(path='../models/lda.pkl'):
+    model = joblib.load(path)
     return model
 
 
-def save(model, path='/models/kMeansModel'):
-    save_file = open(path, 'wb')
-    test_str = pickle.dump(model, save_file, -1)
-
-
-def load(path='/models/kMeansModel'):
-    load_file = open(path, 'rb')
-    output = pickle.load(load_file)
-
-
-def predict(model, data):
-    return model.predict(data)
+if __name__ == '__main__':
+    Bootstrap()
