@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import csv
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.externals import joblib
@@ -23,7 +23,7 @@ def Bootstrap():
     sizes = [10, 15, 20, 25, 30, 40]
     for size in [10, 15, 20, 25, 30, 40]:
         input.append([X, size])
-    p = Pool(4)
+    p = Pool(cpu_count())
     results = p.map(createLDAmodel, input)
     p.close()
     p.join()

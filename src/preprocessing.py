@@ -9,10 +9,6 @@ import re
 import unicodedata
 
 
-# NOTE: MINIMUM 64GB OF RAM REQUIRED TO RUN BOOTSTRAP
-
-
-
 # Global
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()

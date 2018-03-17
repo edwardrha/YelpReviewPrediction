@@ -19,31 +19,28 @@ def printReviewCluster(df, labels, target, size=50):
         if counter == size:
             break;
 
-def Make_word_cloud(input_data, cluster_labels):
-    '''
-        Input:  List reviews, labels
-        Output: None
-    ----------------------------------------------------------------------------
-    Creates and saves a wordcloud for each cluster at '../image_outputs'
-    '''
-    import pytagcloud
-    labels = np.unique(cluster_labels)
-    for label in labels:
-        content_list = []
-        for item in input_data[cluster_labels==label]:
-            content_list.append(item)
-        split_to_words = ' '.join(content_list).split()
-        counter = Counter(split_to_words)
-        tags = counter.most_common(50)
-        taglist = pytagcloud.make_tags(tags, maxsize=80)
-        pytagcloud.create_tag_image(taglist, 'images/wordcloud_'+str(label)+'.png', size=(1000, 1000), rectangular=True, layout=4)
+import numpy as np
+import pandas as pd
+import csv
+import time
 
-# model1 = Word2VecModel.load('../models/word2vec_model50')
-# model1.wv.most_similar(positive=['burger', 'fast'], negative=['coffee'])
-# model1.wv.most_similar(positive=['ramen'])
-# model1.wv.most_similar(positive=['sushi', 'chinese'], negative=['japanese'])
-# model1.wv.most_similar(['paris', 'london'], ['france'])
-#
-# df = pd.read_json('../dataset/processed_restaurant_reviews_1.json')
-#
-# df = df.loc[:300000]
+df = pd.read_json('dataset/processed_restaurant_reviews_1.json')
+data = df.text.apply(' '.join)[:300000]
+
+
+
+sizes = [10, 15, 20, 25, 30, 40]
+i = 3 # Change this to open labels for different cluster size
+thefile = open('dataset/300ktop_category_' + str(sizes[i]) + '.txt', 'r')
+reader = csv.reader(thefile)
+labels = [] # This will store the labels
+for row in reader:
+    labels.append(row[0])
+thefile.close()
+labels = np.array(labels)
+
+for j in range(sizes[i]):
+    print "Topic %d:" % (j)
+    for item in  data[labels==str(j)][:20]:
+        print item, '\n'
+    print "\n"
