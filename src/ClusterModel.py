@@ -17,6 +17,7 @@ def Bootstrap():
     vocab = vec.get_feature_names()
     tf_feature_names = vec.get_feature_names()
     save(tf_feature_names, '../models/tf_feature_names.pkl')
+    save(vec, '..models/countvectorizer.pkl')
 
     input = []
     sizes = [10, 15, 20, 25, 30, 40]
@@ -48,6 +49,7 @@ def display_topics(model, feature_names, no_top_words):
     for topic_idx, topic in enumerate(model.components_):
         print "Topic %d:" % (topic_idx)
         print " ".join([feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]])
+        print ""
 
 
 def createLDAmodel(list1):
