@@ -49,5 +49,5 @@ def vectorizeWord(model, word):
     return model[word]
 
 
-# if __name__ == '__main__':
-    # Bootstrap()
+if __name__ == '__main__':
+    Bootstrap()

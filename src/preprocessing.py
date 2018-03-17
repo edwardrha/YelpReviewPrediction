@@ -12,6 +12,7 @@ import unicodedata
 # NOTE: MINIMUM 64GB OF RAM REQUIRED TO RUN BOOTSTRAP
 
 
+
 # Global
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
@@ -54,5 +55,5 @@ def Bootstrap():
     df_temp[2800000:3500000].to_json('../dataset/processed_restaurant_reviews_5.json')
 
 
-# if __name__ == "__main__":
-#     Bootstrap()
+if __name__ == "__main__":
+    Bootstrap()
