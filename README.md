@@ -1,4 +1,5 @@
 # YelpReviewPrediction
+###### By Terry Shih and InHo Rha
 Data science project for CSCI 183. ~~Using the data from Yelp reviews to predict the stars it will give.~~ Changed project to topic modeling and extraction of categorical scores for the restaurants based on the extracted topics.
 
 
